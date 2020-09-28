@@ -3,8 +3,6 @@
 
 set -e
 
-CDPATH="" cd -- "$(dirname -- "$(dirname -- "$0")")"
-
 if [ "$CODESPACES" != "true" ]; then
   exit
 fi
