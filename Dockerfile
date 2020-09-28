@@ -1,6 +1,4 @@
 FROM golang:1-buster
-LABEL org.opencontainers.image.source=https://github.com/willabides/codespaces-go
-ENV GOPRIVATE=github.com/github/*
 
 RUN apt-get update \
   && apt-get install -y \
@@ -31,3 +29,6 @@ RUN go get \
     golang.org/x/lint/golint \
     golang.org/x/tools/gopls \
     mvdan.cc/gofumpt
+
+LABEL org.opencontainers.image.source=https://github.com/willabides/codespaces-go
+ENV GOPRIVATE=github.com/github/*
