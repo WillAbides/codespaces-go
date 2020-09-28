@@ -17,7 +17,7 @@ jobs:
           echo "::set-env name=IMAGE_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:${{ github.sha }}"
           echo "::set-env name=LATEST_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:latest"
       - name: build
-        run: docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG"
+        run: docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG" .
       - name: push sha tag
         run: docker push "$IMAGE_TAG"
       - name: push latest tag
