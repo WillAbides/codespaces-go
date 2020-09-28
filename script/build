@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+CDPATH="" cd -- "$(dirname -- "$(dirname -- "$0")")"
+
+usage() {
+  echo 'usage: IMAGE_NAME=<tag> IMAGE_GO_VERSION=<version> script/build'
+  exit 2
+}
+
+[ -n "$IMAGE_NAME" ] || usage
+[ -n "$IMAGE_GO_VERSION" ] || usage
+
+CACHE_IMAGE="$(echo "$IMAGE_NAME" | cut -d ':' -f1):latest"
+docker pull "$CACHE_IMAGE" || true
+
+sed "s/1-buster/$IMAGE_GO_VERSION-buster/" Dockerfile | docker build -t "$IMAGE_NAME" -

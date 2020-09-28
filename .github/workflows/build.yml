@@ -12,20 +12,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: set image tag
         run: |
-          echo "::set-env name=IMAGE_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:${{ github.sha }}"
+          echo "::set-env name=IMAGE_NAME::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:${{ github.sha }}"
           echo "::set-env name=LATEST_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:latest"
+          echo "::set-env name=IMAGE_GO_VERSION::${{ matrix.go-version }}"
       - name: docker login
         run: echo "${{ secrets.WILLABIDES_TOKEN }}" | docker login ghcr.io --username gh-containers-bot --password-stdin
-      - name: pull
-        run: |
-          docker pull "$LATEST_TAG" || true
-          docker pull "golang:${{ matrix.go-version }}"
-      - name: build
-        run: docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG" .
+      - run: script/build
       - name: push sha tag
-        run: docker push "$IMAGE_TAG"
+        run: docker push "$IMAGE_NAME"
       - name: push latest tag
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          docker tag "$IMAGE_TAG" "$LATEST_TAG"
+          docker tag "$IMAGE_NAME" "$LATEST_TAG"
           docker push "$LATEST_TAG"

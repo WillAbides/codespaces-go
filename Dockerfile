@@ -1,5 +1,4 @@
-ARG VARIANT=1
-FROM golang:${VARIANT}-buster
+FROM golang:1-buster
 LABEL org.opencontainers.image.source=https://github.com/willabides/codespaces-go
 ENV GOPRIVATE=github.com/github/*
 
