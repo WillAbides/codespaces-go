@@ -10,16 +10,17 @@ jobs:
         go-version: [ 1, 1.14, 1.15 ]
     steps:
       - uses: actions/checkout@v2
-      - name: docker login
-        run: echo "${{ secrets.WILLABIDES_TOKEN }}" | docker login ghcr.io --username gh-containers-bot --password-stdin
       - name: set image tag
         run: |
           echo "::set-env name=IMAGE_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:${{ github.sha }}"
           echo "::set-env name=LATEST_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:latest"
+      - name: pull
+        - docker pull "$LATEST_TAG" || true
+        - docker pull "golang:${{ matrix.go-version }}"
+      - name: docker login
+        run: echo "${{ secrets.WILLABIDES_TOKEN }}" | docker login ghcr.io --username gh-containers-bot --password-stdin
       - name: build
-        run: |
-          docker pull "$LATEST_TAG" || true
-          docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG" .
+        run: docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG" .
       - name: push sha tag
         run: docker push "$IMAGE_TAG"
       - name: push latest tag
