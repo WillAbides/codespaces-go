@@ -15,4 +15,7 @@ usage() {
 CACHE_IMAGE="$(echo "$IMAGE_NAME" | cut -d ':' -f1):latest"
 docker pull "$CACHE_IMAGE" || true
 
-sed "s/1-buster/$IMAGE_GO_VERSION-buster/" Dockerfile | docker build -t "$IMAGE_NAME" -
+mkdir -p tmp/buildspace
+sed "s/1-buster/$IMAGE_GO_VERSION-buster/" Dockerfile >tmp/buildspace/Dockerfile
+cd tmp/buildspace
+docker build -t "$IMAGE_NAME" --cache-from="$CACHE_IMAGE" .
