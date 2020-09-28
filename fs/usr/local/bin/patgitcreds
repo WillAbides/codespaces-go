@@ -1,11 +1,7 @@
 #!/bin/bash
-#/ gitcreds configures git to store for a credential helper
+#/ patgitcreds configures git use a personal access token to access repos on github.com
 
 set -e
-
-if [ "$CODESPACES" != "true" ]; then
-  exit
-fi
 
 if [ ! -f "$HOME/.git-credentials" ]; then
   if [ -z "$GITHUB_TOKEN" ]; then
