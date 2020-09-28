@@ -1,5 +1,6 @@
 ARG VARIANT=1
 FROM golang:${VARIANT}-buster
+LABEL org.opencontainers.image.source=https://github.com/willabides/codespaces-go
 ENV GOPRIVATE=github.com/github/*
 
 RUN apt-get update \

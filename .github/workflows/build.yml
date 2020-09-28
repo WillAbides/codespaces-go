@@ -5,6 +5,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        go-version: [ 1, 1.14, 1.15 ]
     steps:
       - uses: actions/checkout@v2
-      - run: docker build .
+      - name: docker login
+        run: echo "${{ secrets.WILLABIDES_TOKEN }}" | docker login ghcr.io --username gh-containers-bot --password-stdin
+      - name: set image tag
+        run: |
+          echo "::set-env name=IMAGE_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:${{ github.sha }}"
+          echo "::set-env name=LATEST_TAG::ghcr.io/willabides/codespaces-go${{ matrix.go-version }}:latest"
+      - name: build
+        run: docker build --build-arg VARIANT=${{ matrix.go-version }} -t "$IMAGE_TAG"
+      - name: push sha tag
+        run: docker push "$IMAGE_TAG"
+      - name: push latest tag
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: |
+          docker tag "$IMAGE_TAG" "$LATEST_TAG"
+          docker push "$LATEST_TAG"
