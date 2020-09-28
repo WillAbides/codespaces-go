@@ -17,5 +17,6 @@ docker pull "$CACHE_IMAGE" || true
 
 mkdir -p tmp/buildspace
 sed "s/1-buster/$IMAGE_GO_VERSION-buster/" Dockerfile >tmp/buildspace/Dockerfile
+cp -a fs tmp/buildspace/fs
 cd tmp/buildspace
 docker build -t "$IMAGE_NAME" --cache-from="$CACHE_IMAGE" .

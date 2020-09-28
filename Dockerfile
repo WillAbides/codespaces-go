@@ -30,5 +30,7 @@ RUN go get \
     golang.org/x/tools/gopls \
     mvdan.cc/gofumpt
 
+COPY ./fs /
+
 LABEL org.opencontainers.image.source=https://github.com/willabides/codespaces-go
 ENV GOPRIVATE=github.com/github/*

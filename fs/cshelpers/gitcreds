@@ -1,0 +1,28 @@
+#!/bin/bash
+#/ gitcreds configures git to store for a credential helper
+
+set -e
+
+CDPATH="" cd -- "$(dirname -- "$(dirname -- "$0")")"
+
+if [ "$CODESPACES" != "true" ]; then
+  exit
+fi
+
+if [ ! -f "$HOME/.git-credentials" ]; then
+  if [ -z "$GITHUB_TOKEN" ]; then
+    read -srp 'Enter PAT to clone private repos:  ' GITHUB_TOKEN
+    echo ""
+  fi
+  echo "https://x:$GITHUB_TOKEN@github.com" > "$HOME/.git-credentials"
+fi
+
+codespaceshelper="$(git config --system --default missing --get credential.helper)"
+
+if [[ "$codespaceshelper" != *"codespaces"* ]]; then
+  exit
+fi
+
+git config --local credential.helper "$codespaceshelper"
+git config --system --unset credential.helper
+git config --global credential.helper store
