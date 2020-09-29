@@ -1,7 +1,9 @@
 name: build
 on:
-  - push
-  - workflow_dispatch
+  push: {}
+  workflow_dispatch: {}
+  schedule:
+    - cron: "12 9 * * 2"
 jobs:
   build:
     runs-on: ubuntu-20.04
