@@ -11,12 +11,12 @@ if [ ! -f "$HOME/.git-credentials" ]; then
   echo "https://x:$GITHUB_TOKEN@github.com" > "$HOME/.git-credentials"
 fi
 
-codespaceshelper="$(git config --system --default missing --get credential.helper)"
-
-if [[ "$codespaceshelper" != *"codespaces"* ]]; then
+mkdir -p /usr/local/etc/patgitcreds
+if [ -f "/usr/local/etc/patgitcreds/.done" ]; then
   exit
 fi
 
-git config --local credential.helper "$codespaceshelper"
-git config --system --unset credential.helper
+git config --system --unset credential.helper || true
 git config --global credential.helper store
+
+touch /usr/local/etc/patgitcreds/.done
