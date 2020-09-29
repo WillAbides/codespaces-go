@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -e
+
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get update
+
+PACKAGE_LIST="$(cat <<EOF | tr "\n" " "
+apt-transport-https
+apt-utils
+ca-certificates
+curl
+dialog
+git
+gnupg-agent
+gnupg2
+htop
+iproute2
+jq
+less
+libc6
+libgcc1
+libgssapi-krb5-2
+libicu[0-9][0-9]
+liblttng-ust0
+libssl1.1
+libstdc++6
+locales
+lsb-release
+lsof
+man-db
+nano
+ncdu
+net-tools
+openssh-client
+procps
+psmisc
+rsync
+software-properties-common
+sudo
+unzip
+vim-tiny
+wget
+zip
+zlib1g
+EOF
+)"
+
+apt-get -y install --no-install-recommends $PACKAGE_LIST 2> >( grep -v 'apt-utils is not installed' >&2 )
+
+curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/debian \
+        $(lsb_release -cs) \
+        stable"
+apt-get update
+apt-get install -y --no-install-recommends docker-ce-cli docker-compose
+apt-get clean
+rm -rf /var/lib/apt/lists/*
+
+if ! grep -o -E '^\s*en_US.UTF-8\s+UTF-8' /etc/locale.gen > /dev/null; then
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+    locale-gen
+fi
