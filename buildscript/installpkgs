@@ -34,6 +34,7 @@ nano
 ncdu
 net-tools
 openssh-client
+pass
 procps
 psmisc
 rsync
